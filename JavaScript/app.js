@@ -300,10 +300,18 @@ let value = {
         "max": 10
     }
 }
+let personData = [];
+
 const eventData = localStorage.getItem("eventData");
 if (eventData) {
     const ObjectData = JSON.parse(eventData);
     value = ObjectData;
+}
+const eventPersonData = localStorage.getItem("eventPersonData");
+if (eventPersonData) {
+    const ObjectData = JSON.parse(eventPersonData);
+    personData = ObjectData;
+    UpdateLog();
 }
 
 function GetGiftcode() {
@@ -333,13 +341,31 @@ function GetGiftcode() {
             icon: "success",
             title: "Chúc mừng",
             text: `Bạn đã nhận được ${Number(amount).toLocaleString('de-DE')} đ`,
-        }).then(result => {
-            document.getElementById("name").value = "";
-            document.getElementById("giftcode").value = "";
-            delete value[data.giftcode];
-            const JsonData = JSON.stringify(value);
-            localStorage.setItem("eventData", JsonData);
         });
+        document.getElementById("name").value = "";
+        document.getElementById("giftcode").value = "";
+        delete value[data.giftcode];
+        const JsonData = JSON.stringify(value);
+        localStorage.setItem("eventData", JsonData);
+
+        const now = new Date();
+    
+        const year = now.getFullYear().toString().padStart(4, 0);
+        const month = (now.getMonth() + 1).toString().padStart(2, 0);
+        const day = now.getDate().toString().padStart(2, 0);
+        const hour = now.getHours().toString().padStart(2, 0);
+        const minute = now.getMinutes().toString().padStart(2, 0);
+        const second = now.getSeconds().toString().padStart(2, 0);
+
+        const Person = {
+            name: name,
+            giftcode: data.giftcode,
+            reward: Number(amount),
+            time: `${hour}:${minute}:${second} ${day}/${month}/${year}`,
+        }
+        personData.unshift(Person);
+        localStorage.setItem("eventPersonData", JSON.stringify(personData));
+        UpdateLog();
     }
     else {
         Swal.fire({
@@ -348,4 +374,18 @@ function GetGiftcode() {
             text: "Giftcode đã được sử dụng hoặc không tồn tại",
         });
     }
+}
+
+function UpdateLog() {
+    const log_show = document.getElementById("log_show");
+    log_show.innerHTML = "";
+    personData.forEach(items => {
+        const HTMLStructure = `<tr>
+                                <td colspan="3">${items.name}</td>
+                                <td>${items.giftcode}</td>
+                                <td>${Number(items.reward).toLocaleString('de-DE') + " đ"}</td>
+                                <td>${items.time}</td>
+                            </tr>`;
+        log_show.innerHTML += HTMLStructure;
+    });
 }
