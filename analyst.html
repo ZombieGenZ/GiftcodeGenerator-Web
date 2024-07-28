@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="CSS/analyst.css" />
+    <title>Analyst - Poly's Travel</title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-top">
+        <div class="main-top-items">
+          <div class="main-top-items-top"></div>
+          <div
+            class="main-top-items-bottom"
+            style="position: relative; height: 40vh; width: 40vw"
+          >
+            <canvas id="chart-1"></canvas>
+          </div>
+        </div>
+        <div class="main-top-items">
+          <div class="main-top-items-top"></div>
+          <div
+            class="main-top-items-bottom"
+            style="position: relative; height: 40vh; width: 40vw"
+          >
+            <canvas id="chart-2"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="main-bottom">
+        <button id="exportAnalyst">Xuất dử liệu</button>
+      </div>
+    </div>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let analyst = {
+        Total: 0,
+        win: 0,
+        lost: 0,
+        items1: 0,
+        items2: 0,
+        items3: 0,
+        items4: 0,
+        items5: 0,
+        items6: 0,
+        items7: 0,
+      };
+
+      const eventAnalystData = localStorage.getItem("eventAnalystData");
+      if (eventAnalystData) {
+        const ObjectData = JSON.parse(eventAnalystData);
+        analyst = ObjectData;
+      }
+
+      const ctx_1 = document.getElementById("chart-1");
+      const ctx_2 = document.getElementById("chart-2");
+
+      new Chart(ctx_1, {
+        type: "bar",
+        data: {
+          labels: [
+            "Số lượng voucher đã sử dụng",
+            "Trúng thưởng",
+            "Không trúng thưởng",
+          ],
+          datasets: [
+            {
+              label: "Thống kê tổng quát",
+              data: [analyst.Total, analyst.win, analyst.lost],
+              borderWidth: 1,
+              backgroundColor: [
+                "rgba(0, 179, 255, 0.2)",
+                "rgba(106, 255, 0, 0.2)",
+                "rgba(255, 187, 0, 0.2)",
+              ],
+              borderColor: [
+                "rgba(0, 179, 255, 0.2)",
+                "rgba(106, 255, 0, 0.2)",
+                "rgba(255, 187, 0, 0.2)",
+              ],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+      new Chart(ctx_2, {
+        type: "bar",
+        data: {
+          labels: [
+            "Chúc bạn may mắng lần sau",
+            "Voucher giảm 10%",
+            "Voucher giảm 20%",
+            "Voucher giảm 30%",
+            "Voucher giảm 40%",
+            "Voucher giảm 50%",
+            "Small food or drink",
+          ],
+          datasets: [
+            {
+              label: "Tỉ lệ trúng giải",
+              data: [
+                analyst.items7,
+                analyst.items1,
+                analyst.items2,
+                analyst.items3,
+                analyst.items4,
+                analyst.items5,
+                analyst.items6,
+              ],
+              borderWidth: 1,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+                "rgba(255, 159, 64, 0.6)",
+                "rgba(199, 199, 199, 0.6)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+                "rgba(199, 199, 199, 1)",
+              ],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    </script>
+    <script>
+      document
+        .getElementById("exportAnalyst")
+        .addEventListener("click", function () {
+          const now = new Date();
+
+          const year = now.getFullYear().toString().padStart(4, 0);
+          const month = (now.getMonth() + 1).toString().padStart(2, 0);
+          const day = now.getDate().toString().padStart(2, 0);
+          const hour = now.getHours().toString().padStart(2, 0);
+          const minute = now.getMinutes().toString().padStart(2, 0);
+          const second = now.getSeconds().toString().padStart(2, 0);
+
+          const time = `${hour}-${minute}-${second}_${day}-${month}-${year}`;
+          html2canvas(document.querySelector("#chart-1")).then((canvas) => {
+            const link = document.createElement("a");
+            link.download = `General-statistics-${time}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+          });
+          html2canvas(document.querySelector("#chart-2")).then((canvas) => {
+            const link = document.createElement("a");
+            link.download = `detailed-statistics-${time}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+          });
+        });
+    </script>
+  </body>
+</html>
