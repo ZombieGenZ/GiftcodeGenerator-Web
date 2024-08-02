@@ -618,8 +618,6 @@ const eventData = localStorage.getItem("eventData");
 if (eventData) {
   const ObjectData = JSON.parse(eventData);
   value = ObjectData;
-} else {
-  value = giftcodeData;
 }
 
 const eventPlayerData = localStorage.getItem("eventPlayerData");
